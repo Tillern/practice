@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:practice/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'user_details_screen.dart';
 
 class UserListScreen extends StatelessWidget {
-  const UserListScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
@@ -13,15 +11,39 @@ class UserListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Users')),
       body: userProvider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: userProvider.users.length,
         itemBuilder: (context, index) {
           final user = userProvider.users[index];
-          return ListTile(
-            leading: Image.network(user.picture),
-            title: Text(user.name),
-            subtitle: Text(user.email),
+
+          Color cardColor = user.gender == 'female' ? Colors.lightGreen[100]! : Colors.lightBlue[100]!;
+
+          return Card(
+            color: cardColor,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: ListTile(
+              // Make the image circular
+              leading: ClipOval(
+                child: Image.network(
+                  user.picture,
+                  width: 50, // Adjust size as needed
+                  height: 50, // Adjust size as needed
+                  fit: BoxFit.cover,
+                ),
+              ),
+              title: Text(user.name),
+              subtitle: Text(user.email),
+              onTap: () {
+                // Navigate to UserDetailsScreen and pass the selected user
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserDetailsScreen(user: user),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
@@ -29,8 +51,9 @@ class UserListScreen extends StatelessWidget {
         onPressed: () {
           userProvider.fetchUsers();
         },
-        child: const Icon(Icons.refresh),
+        child: Icon(Icons.refresh),
       ),
     );
   }
 }
+
