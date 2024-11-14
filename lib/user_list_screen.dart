@@ -35,7 +35,6 @@ class UserListScreen extends StatelessWidget {
               title: Text(user.name),
               subtitle: Text(user.email),
               onTap: () {
-                // Navigate to UserDetailsScreen and pass the selected user
                 Navigator.push(
                   context,
                   MaterialPageRoute(
